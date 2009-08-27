@@ -63,7 +63,6 @@ class tx_pagenotfoundhandler {
 		// interpret indexed_search results
 		if (intval($this->conf['redirect'])) {
 			$results = $this->doIndexedSearch($this->searchVars);
-			var_dump($results); die('done');
 			if ($this->conf['maxHighestRatingResults'] >= 0) {
 				if (count($results) == 1 && $results[0]['rating'] >= $this->conf['minRating']) {
 					$redirect = true;
