@@ -54,7 +54,7 @@ class tx_pagenotfoundhandler {
 		$this->ref = $ref;
 		$this->conf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_pagenotfoundhandler.'];
 		$this->cObj = t3lib_div::makeInstance('tslib_cObj');
-		$this->base = dirname(t3lib_div::getIndpEnv('SCRIPT_NAME')) . '/';
+		$this->base = str_replace(DIRECTORY_SEPARATOR, '/', dirname(t3lib_div::getIndpEnv('SCRIPT_NAME'))) . '/';
 		$searchVars = $this->getSearchVars();
 		$this->searchVars = $this->ignoreValues($searchVars);
 		
@@ -63,6 +63,7 @@ class tx_pagenotfoundhandler {
 		// interpret indexed_search results
 		if (intval($this->conf['redirect'])) {
 			$results = $this->doIndexedSearch($this->searchVars);
+			var_dump($results); die('done');
 			if ($this->conf['maxHighestRatingResults'] >= 0) {
 				if (count($results) == 1 && $results[0]['rating'] >= $this->conf['minRating']) {
 					$redirect = true;
@@ -187,7 +188,7 @@ class tx_pagenotfoundhandler {
 		
 		$sWArr = array();
 		foreach ($searchVars as $sword) {
-			$sWArr[] = array('sword' => $sword, 'oper' => $this->conf['opterator']);
+			$sWArr[] = array('sword' => $sword, 'oper' => $this->conf['operator']);
 		}
 		
 		$content = '';
