@@ -54,7 +54,7 @@ class tx_pagenotfoundhandler {
 		$this->ref = $ref;
 		$this->conf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_pagenotfoundhandler.'];
 		$this->cObj = t3lib_div::makeInstance('tslib_cObj');
-		$this->base = str_replace(DIRECTORY_SEPARATOR, '/', dirname(t3lib_div::getIndpEnv('SCRIPT_NAME'))) . '/';
+		$this->base = str_replace(t3lib_div::getIndpEnv('TYPO3_REQUEST_HOST'), '', t3lib_div::getIndpEnv('TYPO3_REQUEST_DIR'));
 		$searchVars = $this->getSearchVars();
 		$this->searchVars = $this->ignoreValues($searchVars);
 		
@@ -79,12 +79,12 @@ class tx_pagenotfoundhandler {
 		// redirect to page or search
 		if ($redirect) {
 			$header = $this->conf['redirectHeader'];
-			$location = $this->base . $this->cObj->getTypoLink_URL($results[0]['page_id']);
+			$location = t3lib_div::getIndpEnv('TYPO3_REQUEST_DIR') . $this->cObj->getTypoLink_URL($results[0]['page_id']);
 		}
 		else {
 			$header = $this->conf['searchHeader'];
 			$sword = urlencode(implode(' ' . $this->conf['operator'] . ' ', $this->searchVars));
-			$location = $this->base . $this->cObj->getTypoLink_URL($this->conf['searchPid']) . '?tx_pagenotfoundhandler=1&tx_indexedsearch[sword]=' . $sword;
+			$location = t3lib_div::getIndpEnv('TYPO3_REQUEST_DIR') . $this->cObj->getTypoLink_URL($this->conf['searchPid']) . '?tx_pagenotfoundhandler=1&tx_indexedsearch[sword]=' . $sword;
 		}
 		
 		$this->redirect($header, $location);
@@ -105,8 +105,14 @@ class tx_pagenotfoundhandler {
 		}
 		
 		if (!count($searchVars)) {
-			$request = preg_replace('/' . str_replace('/', '\/', $this->base) . '/', '', $this->param['currentUrl']);
-			$searchVars = $this->getRequestUrlVars($request);
+			$request = preg_replace('/^' . str_replace('/', '\/', $this->base) . '/', '', $this->param['currentUrl']);
+			if ($this->conf['query']) {
+				$searchVars = $this->getRequestUrlVars($request);
+			}
+			else {
+				$requestParts = parse_url($request);
+				$searchVars = $this->getRequestUrlVars($requestParts['path']);
+			}
 		}
 		
 		return $searchVars;

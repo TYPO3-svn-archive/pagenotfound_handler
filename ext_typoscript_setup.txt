@@ -8,6 +8,9 @@ plugin.tx_pagenotfoundhandler {
 	# Tries to use the referer to get the keywords (0=off/1=on)
 	referer = 0
 	
+	# Tries to use the query string to get the keywords (0=off/1=on)
+	query = 0
+	
 	# search operator (en: AND/OR; de: UND/ODER)
 	operator = OR
 	
