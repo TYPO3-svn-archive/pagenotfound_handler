@@ -1,15 +1,21 @@
 plugin.tx_pagenotfoundhandler {
-	# Redirect to best matching result (0=off/1=on)
+	# redirect to best matching result (0=off/1=on)
 	redirect = 0
 	
 	# this header is set if user is redirected to a page
 	redirectHeader = 301 Moved Permanently
 	
-	# Tries to use the referer to get the keywords (0=off/1=on)
+	# tries to use the referer to get the keywords (0=off/1=on)
 	referer = 0
 	
-	# Tries to use the query string to get the keywords (0=off/1=on)
+	# tries to use the query string to get the keywords (0=off/1=on)
 	query = 0
+	
+	# this regular expression pattern is used to split path segment into search words
+	pathSplitPattern = [\s/\-_\+]+
+	
+	# this regular expression pattern is used to split query segment into search words
+	querySplitPattern = [\s/\-_\+\[\]=&]+
 	
 	# search operator (en: AND/OR; de: UND/ODER)
 	operator = OR

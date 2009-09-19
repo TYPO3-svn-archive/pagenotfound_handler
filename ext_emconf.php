@@ -3,7 +3,7 @@
 ########################################################################
 # Extension Manager/Repository config file for ext: "pagenotfound_handler"
 #
-# Auto generated 15-09-2009 20:38
+# Auto generated 19-09-2009 20:21
 #
 # Manual updates:
 # Only the data in the array - anything else is removed by next write.
@@ -29,7 +29,7 @@ $EM_CONF[$_EXTKEY] = array(
 	'clearCacheOnLoad' => 0,
 	'lockType' => '',
 	'author_company' => '',
-	'version' => '1.0.3',
+	'version' => '1.0.4',
 	'constraints' => array(
 		'depends' => array(
 			'indexed_search' => '',
@@ -39,7 +39,7 @@ $EM_CONF[$_EXTKEY] = array(
 		'suggests' => array(
 		),
 	),
-	'_md5_values_when_last_written' => 'a:6:{s:32:"class.tx_pagenotfoundhandler.php";s:4:"8391";s:12:"ext_icon.gif";s:4:"90f6";s:17:"ext_localconf.php";s:4:"a67b";s:24:"ext_typoscript_setup.txt";s:4:"d080";s:17:"doc/manual.de.sxw";s:4:"ef6f";s:14:"doc/manual.sxw";s:4:"6802";}',
+	'_md5_values_when_last_written' => 'a:6:{s:32:"class.tx_pagenotfoundhandler.php";s:4:"3236";s:12:"ext_icon.gif";s:4:"90f6";s:17:"ext_localconf.php";s:4:"a67b";s:24:"ext_typoscript_setup.txt";s:4:"f047";s:17:"doc/manual.de.sxw";s:4:"e0c6";s:14:"doc/manual.sxw";s:4:"8ddb";}',
 	'suggests' => array(
 	),
 );

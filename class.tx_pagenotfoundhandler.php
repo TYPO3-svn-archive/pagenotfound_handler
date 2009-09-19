@@ -43,6 +43,9 @@ class tx_pagenotfoundhandler {
 	 * @return	null
 	 */
 	function main($param, $ref) {
+		// reset pageNotFound_handling, otherwise an endless loop in determineId() occurs for one level .html urls
+		$GLOBALS['TSFE']->TYPO3_CONF_VARS['FE']['pageNotFound_handling'] = null;
+		
 		// setup to get plugin configurations
 		$GLOBALS['TSFE']->determineId();
 		$GLOBALS['TSFE']->getCompressedTCarray();
@@ -106,12 +109,16 @@ class tx_pagenotfoundhandler {
 		
 		if (!count($searchVars)) {
 			$request = preg_replace('/^' . str_replace('/', '\/', $this->base) . '/', '', $this->param['currentUrl']);
+			$requestParts = parse_url($request);
+			$requestParts['path'] = preg_replace('/\.html$/i', '', $requestParts['path']);
+			
 			if ($this->conf['query']) {
-				$searchVars = $this->getRequestUrlVars($request);
+				$searchVars = $this->getRequestUrlVars($requestParts['path'], $this->conf['pathSplitPattern']);
+				$searchVars = array_merge($searchVars, $this->getRequestUrlVars($requestParts['query'], $this->conf['querySplitPattern']));
+				$searchVars = array_unique($searchVars);
 			}
 			else {
-				$requestParts = parse_url($request);
-				$searchVars = $this->getRequestUrlVars($requestParts['path']);
+				$searchVars = $this->getRequestUrlVars($requestParts['path'], $this->conf['pathSplitPattern']);
 			}
 		}
 		
@@ -135,13 +142,13 @@ class tx_pagenotfoundhandler {
 			$searchKeys = array('query', 'search', 'q', 's', 'p');
 			foreach ($searchKeys as $searchKey) {
 				if (array_key_exists($searchKey, $searchVarsParts)) {
-					$searchVars = $this->getRequestUrlVars($searchVarsParts[$searchKey]);
+					$searchVars = $this->getRequestUrlVars($searchVarsParts[$searchKey], $this->conf['querySplitPattern']);
 					break;
 				}	
 			}
 		}
 		else if (!empty($refererParts['path'])) {
-			$searchVars = $this->getRequestUrlVars($refererParts['path']);
+			$searchVars = $this->getRequestUrlVars($refererParts['path'], $this->conf['pathSplitPattern']);
 		}
 		
 		return $searchVars;
@@ -154,10 +161,10 @@ class tx_pagenotfoundhandler {
 	 * @param	string		$request: Request-string
 	 * @return	array
 	 */
-	function getRequestUrlVars($request) {
+	function getRequestUrlVars($request, $pattern) {
 		$searchVars = array();
 		
-		$requestParts = preg_split('/[\s,\/\-_\+]+/', $request, -1, PREG_SPLIT_NO_EMPTY);
+		$requestParts = preg_split('/' . str_replace('/', '\/', $pattern) . '/', $request, -1, PREG_SPLIT_NO_EMPTY);
 		foreach ($requestParts as $value) {
 			$searchVars[] = strtolower($value);
 		}
